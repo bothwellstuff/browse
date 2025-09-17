@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>owe proxy</title>
+  <title>Proxy Browser</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin: 0; }
+    body { font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
     input { width: 60%; padding: 10px; font-size: 16px; }
-    button { padding: 10px 20px; font-size: 16px; margin-left: 5px; }
+    button { padding: 10px 20px; font-size: 16px; margin-left: 5px; cursor: pointer; }
+    footer { margin-top: 20px; font-size: 14px; color: #666; }
   </style>
 </head>
 <body>
   <h1>Proxy Browser</h1>
-  <input id="urlInput" type="text" placeholder="Enter a URL">
+  <input id="urlInput" type="text" placeholder="Enter a URL (e.g. duckduckgo.com)">
   <button onclick="go()">Go</button>
 
-  <footer style="margin-top:20px; font-size:14px; color:#666;">
+  <footer>
     <p>
       made by o ig, visit main: 
       <a href="https://bothwellstuff.github.io/bothwlllll/" target="_blank">CLICK ME</a>
@@ -22,29 +23,34 @@
   </footer>
 
   <script>
-    const proxy = "https://cloudprox.ntsmail99.workers.dev/?url="; 
-    // replace with your actual Worker URL
+    // Replace this with your Worker URL
+    const proxy = "https://cloudprox.ntsmail99.workers.dev/?url=";
 
     function go() {
       let target = document.getElementById("urlInput").value.trim();
       if (!target) return alert("Enter a URL first!");
 
       // Add https:// if missing
-      if (!/^https?:\/\//i.test(target)) {
-        target = "https://" + target;
-      }
+      if (!/^https?:\/\//i.test(target)) target = "https://" + target;
 
+      // Fetch the site through your Worker
       fetch(proxy + encodeURIComponent(target))
         .then(res => res.text())
         .then(html => {
+          // Replace current page with proxied HTML
           document.open();
           document.write(html);
           document.close();
         })
         .catch(err => {
-          alert("Error: " + err);
+          alert("Error fetching the site: " + err.message);
         });
     }
+
+    // Optional: allow Enter key to submit
+    document.getElementById("urlInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") go();
+    });
   </script>
 </body>
 </html>
