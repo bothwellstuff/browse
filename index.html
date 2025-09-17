@@ -1,56 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Proxy Browser</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
-    input { width: 60%; padding: 10px; font-size: 16px; }
-    button { padding: 10px 20px; font-size: 16px; margin-left: 5px; cursor: pointer; }
-    footer { margin-top: 20px; font-size: 14px; color: #666; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy Frontend</title>
+<style>
+body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+input { width: 70%; padding: 10px; }
+button { padding: 10px; }
+footer { margin-top: 50px; font-size: 0.9em; }
+</style>
 </head>
 <body>
-  <h1>Proxy Browser</h1>
-  <input id="urlInput" type="text" placeholder="Enter a URL (e.g. duckduckgo.com)">
-  <button onclick="go()">Go</button>
+<h1>Web Proxy</h1>
+<form id="proxyForm">
+  <input type="text" id="urlInput" placeholder="https://example.com">
+  <button type="submit">Go</button>
+</form>
 
-  <footer>
-    <p>
-      made by o ig, visit main: 
-      <a href="https://bothwellstuff.github.io/bothwlllll/" target="_blank">CLICK ME</a>
-    </p>
-  </footer>
+<footer>
+  Made by Owen, visit main: 
+  <a href="https://bothwellstuff.github.io/bothwlllll/" target="_blank">CLICK ME</a>
+</footer>
 
-  <script>
-    // Replace this with your Worker URL
-    const proxy = "https://cloudprox.ntsmail99.workers.dev/?url=";
+<script>
+const workerURL = 'https://cloudprox.ntsmail99.workers.dev/'; // <- replace with your Worker URL
 
-    function go() {
-      let target = document.getElementById("urlInput").value.trim();
-      if (!target) return alert("Enter a URL first!");
+document.getElementById('proxyForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let url = document.getElementById('urlInput').value.trim();
+  if (!url.startsWith('http')) url = 'https://' + url;
 
-      // Add https:// if missing
-      if (!/^https?:\/\//i.test(target)) target = "https://" + target;
-
-      // Fetch the site through your Worker
-      fetch(proxy + encodeURIComponent(target))
-        .then(res => res.text())
-        .then(html => {
-          // Replace current page with proxied HTML
-          document.open();
-          document.write(html);
-          document.close();
-        })
-        .catch(err => {
-          alert("Error fetching the site: " + err.message);
-        });
-    }
-
-    // Optional: allow Enter key to submit
-    document.getElementById("urlInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") go();
-    });
-  </script>
+  // Redirect to Worker with ?url=
+  window.location.href = `${workerURL}?url=${encodeURIComponent(url)}`;
+});
+</script>
 </body>
 </html>
